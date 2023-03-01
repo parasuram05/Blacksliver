@@ -10,29 +10,25 @@
     </div>
 
     <script>
-      const imagesFolder = "https://raw.githubusercontent.com/Narendiran2005/photo/main/images/"; // Replace with your folder path
-      const supportedFormats = ["jpg", "jpeg", "png", "gif"]; // Supported image formats
-      const imageGallery = document.getElementById("image-gallery");
-
-      // Fetch all the image files in the folder
-      fetch(imagesFolder)
-        .then((response) => response.text())
-        .then((html) => {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, "text/html");
-          const imageLinks = Array.from(doc.querySelectorAll("a"))
-            .map((link) => link.href)
-            .filter((href) =>
-              supportedFormats.some((format) => href.endsWith("." + format))
-            );
-          imageLinks.forEach((link) => {
-            const imgElement = document.createElement("img");
-            imgElement.src = link;
-            imgElement.alt = link.split("/").pop();
-            imageGallery.appendChild(imgElement);
-          });
-        })
-        .catch((error) => console.error(error));
+     var xhr = new XMLHttpRequest();
+        xhr.open("GET", "https://raw.githubusercontent.com/Narendiran2005/photo/main/images/", true);
+        xhr.responseType = 'document';
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            var elements = xhr.response.getElementsByTagName("a");
+            for (x of elements) {
+              if (x.href.match(/\.(jpe?g|png|gif)$/)) {
+                let img = document.createElement("img");
+                img.src = x.href;
+                document.body.appendChild(img);
+              }
+            };
+          }
+          else {
+            alert('Request failed. Returned status of ' + xhr.status);
+          }
+        }
+        xhr.send()
     </script>
   </body>
 </html>
