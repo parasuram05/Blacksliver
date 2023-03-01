@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Image Gallery</title>
+  </head>
+  <body>
+    <h1>Image Gallery</h1>
+    <div id="image-gallery">
+      <!-- JavaScript will populate this div with images -->
+    </div>
+
+    <script>
+      let imagesFolder = "./images/"; // Replace with your folder path
+      const supportedFormats = ["jpg", "jpeg", "png", "gif"]; // Supported image formats
+      const imageGallery = document.getElementById("image-gallery");
+
+      // Fetch all the image files in the folder
+      fetch(imagesFolder)
+        .then((response) => response.text())
+        .then((html) => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, "text/html");
+          const imageLinks = Array.from(doc.querySelectorAll("a"))
+            .map((link) => link.href)
+            .filter((href) =>
+              supportedFormats.some((format) => href.endsWith("." + format))
+            );
+          imageLinks.forEach((link) => {
+            const imgElement = document.createElement("img");
+            imgElement.src = link;
+            imgElement.alt = link.split("/").pop();
+            imageGallery.appendChild(imgElement);
+          });
+        })
+        .catch((error) => console.error(error));
+    </script>
+  </body>
+</html>
